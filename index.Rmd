@@ -1,5 +1,6 @@
 ---
 title: "IODS course project"
+author: "Jussipekka Salo"
 output:
   html_document:
     theme: cosmo

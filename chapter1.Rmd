@@ -1,7 +1,23 @@
 
 # About the project
 
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
+
+
+    How are you feeling right now?: I'm feeling excited about starting this course and eager to learn new skills in R for health data science.
+
+    What do you expect to learn?: I expect to learn how to use modern R tools and RStudio effectively for health data analysis. I also hope to gain a better understanding of data visualization and analysis techniques specific to health data.
+
+    Where did you hear about the course?: I heard about this course through my university's course catalog.
+
+    Thoughts on "R for Health Data Science" book: The book served as a great crash course on modern R tools and techniques. It provided a clear introduction to R Markdown and offered practical examples that were easy to follow.
+
+    Favorite Topics: I particularly enjoyed the sections on data visualization. It provided valuable insights into presenting health data effectively.
+
+    Most Difficult Topics: I found the sections on statistical modeling and analysis to be the most challenging. I look forward to diving deeper into these topics.
+
+    R Markdown and New Approach: The introduction to R Markdown was great. It's a fantastic tool for creating reproducible reports and analyses. The new approach of starting with R Markdown makes the learning process more interactive and engaging.
+    
+    https://github.com/jpsalo12/IODS-project
 
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
@@ -9,5 +25,4 @@
 date()
 
 ```
-The text continues here.
 
