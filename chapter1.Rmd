@@ -19,10 +19,4 @@
     
     https://github.com/jpsalo12/IODS-project
 
-```{r}
-# This is a so-called "R chunk" where you can write R code.
-
-date()
-
-```
 
