@@ -38,11 +38,11 @@ learning2014 <- data_ex1[, c("gender","Age","attitude", "deep", "stra", "surf", 
 analysisdata <- dplyr::filter(learning2014, Points != 0)
 
 #Save the data
-write_csv(analysisdata,"Data/learning2014.csv")
+write_csv(analysisdata,"data/learning2014.csv")
 
 rm(analysisdata)
 #read the created data using read_csv command
-analysisdata2 <- read_csv("Data/learning2014.csv")
+analysisdata2 <- read_csv("data/learning2014.csv")
 str(analysisdata2)
 head(analysisdata2)
 
