@@ -378,8 +378,22 @@ display: none;
 to Open Data Science - Course Project</a></li>
 <li><a href="#about-the-project" id="toc-about-the-project">About the
 project</a></li>
-<li><a href="#insert-chapter-2-title-here" id="toc-insert-chapter-2-title-here">Insert chapter 2 title
-here</a></li>
+<li><a href="#regression-and-model-validation" id="toc-regression-and-model-validation">2. Regression and model
+validation</a></li>
+<li><a href="#install-the-sandwich-package" id="toc-install-the-sandwich-package">Install the sandwich
+package</a></li>
+<li><a href="#install-the-lmtest-package" id="toc-install-the-lmtest-package">Install the lmtest package</a>
+<ul>
+<li><a href="#read-the-data" id="toc-read-the-data">Read the
+data</a></li>
+</ul></li>
+<li><a href="#next-lets-draw-some-distirbutions" id="toc-next-lets-draw-some-distirbutions">Next, let’s draw some
+distirbutions</a>
+<ul>
+<li><a href="#regression-model" id="toc-regression-model">Regression
+model</a></li>
+</ul></li>
+<li><a href="#residuals-vs-fitted-values" id="toc-residuals-vs-fitted-values">Residuals vs Fitted values</a></li>
 </ul>
 </div>
 
@@ -406,20 +420,103 @@ R Markdown and New Approach: The introduction to R Markdown was great. It&#39;s 
 https://github.com/jpsalo12/IODS-project</code></pre>
 <hr />
 </div>
-<div id="insert-chapter-2-title-here" class="section level1">
-<h1>Insert chapter 2 title here</h1>
-<p><em>Describe the work you have done this week and summarize your
-learning.</em></p>
+<div id="regression-and-model-validation" class="section level1">
+<h1>2. Regression and model validation</h1>
+<p>install.packages(“tidyverse”)</p>
+</div>
+<div id="install-the-sandwich-package" class="section level1">
+<h1>Install the sandwich package</h1>
+<p>install.packages(“sandwich”)</p>
+</div>
+<div id="install-the-lmtest-package" class="section level1">
+<h1>Install the lmtest package</h1>
+<p>install.packages(“lmtest”)</p>
+<p>library(tidyverse) library(sandwich) library(lmtest)</p>
+<div id="read-the-data" class="section level2">
+<h2>Read the data</h2>
+<p>analysisdata2 &lt;- read_csv(“data/learning2014.csv”)</p>
+<p>str(analysisdata2)</p>
+<p>#Data included survey variables from students, measuring attitudes
+towards statistics with 1-5 scael #Data set includes background
+characteristics like age and gender # There is also info about deep
+learning, strategic learning and surface learning</p>
+</div>
+</div>
+<div id="next-lets-draw-some-distirbutions" class="section level1">
+<h1>Next, let’s draw some distirbutions</h1>
+<p>data_long &lt;- analysisdata2 %&gt;% select(stra,surf,attitude)
+%&gt;% pivot_longer(everything(), names_to = “Variable”)</p>
+<p>ggplot(data_long, aes(x = Variable, y = value)) + geom_boxplot() +
+labs(title = “Figure 1: Distribution for three questions categories”, x
+= “Question category”, y = “Value”) + theme_minimal()</p>
+<p>##This figure shows the distribution for three variables. Median in
+these variables is around three. Next, lets look at age</p>
+<p>hist(analysisdata2$Age, main = “Histogram of Age”, xlab = “Age”, ylab
+= “Frequency”) ## mean age 25 and most observations between 20-25.</p>
+<p>#Next, regression</p>
+<div id="regression-model" class="section level2">
+<h2>Regression model</h2>
+<p>#Run model model &lt;- lm(formula= Points ~ attitude + gender + Age +
+deep, data=analysisdata2) summary(model)</p>
+<p>T-test is used to test the significance of individual regression
+coefficient, it is calculated as a beta coefficient divided by standard
+error. T-test tells if the variable has a relatioship with the outcome
+in statistically meaningful way, if the coefficient is different from
+zero.</p>
+<p>F-test tests if all the coefficients variable have statistically
+meaningful relationship (different from zero) together.</p>
+<p>In the model above, only attitude had a statistically meaningful
+relatioship with points. Hence, I remove the other variables and run it
+again.</p>
+<p>model1 &lt;- lm(formula= Points ~ attitude, data=analysisdata2)
+summary(model1)</p>
+<p>Based on outputs above one can conclude that only statistically
+significant coefficient in the specification is attitude (assuming
+homoskedastic errors!). On average one-unit increase in the scale of
+attitude increases points by roughly 3.5.</p>
 <ul>
-<li>Describe your work and results clearly.</li>
-<li>Assume the reader has an introductory course level understanding of
-writing and reading R code as well as statistical methods.</li>
-<li>Assume the reader has no previous knowledge of your data or the more
-advanced methods you are using.</li>
+<li>t-value tests whether the coefficient is statistically significantly
+different from zero</li>
+<li>F-statistics tests whether all of the coefficient are different from
+zero (jointly)</li>
 </ul>
-<pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Mon Nov  6 15:06:14 2023&quot;</code></pre>
-<p>Here we go again…</p>
+<p>After dropping gender, age and attitude I’m left it one explanatory
+variable (attitude). Beta-coefficient is about 3.5 meaning that one unit
+increase in attitude increases points by 3,5, on average. Standard error
+is pretty small (0.56) so the t-stat is over 6 which means that the
+relationship is statistically significant. Multiple r-squared tells what
+percentage of the variation in outcome variable (points) is explained by
+the model. In this case it is 19 percent.</p>
+<p>##Next plots</p>
+</div>
+</div>
+<div id="residuals-vs-fitted-values" class="section level1">
+<h1>Residuals vs Fitted values</h1>
+<p>plot(model1, which = 1,caption = “Residuals vs fitted values”)</p>
+<p>#Normal qq</p>
+<p>qqnorm(model1$residuals)</p>
+<p>qqline(model1$residuals)</p>
+<p>#Residual vs leverage plot(model1, which = 5)</p>
+<p>Assumptions:</p>
+<p>Linearity: The relationship between the independent variables and the
+dependent variable is linear. The model should capture a linear
+relationship between predictors and the outcome.</p>
+<p>Independence of Errors (Residuals): The errors (residuals) in the
+model are independent of each other. There should be no correlation
+between consecutive residuals or any patterns in their distribution.</p>
+<p>Homoscedasticity (Constant Variance of Errors): The variance of the
+errors should be constant across all levels of the independent
+variables. In other words, the spread of residuals should remain
+consistent across the range of predicted values.</p>
+<p>Normality of Errors (Residuals): The residuals should follow a normal
+distribution. While the normality assumption is not necessary for
+unbiasedness, violations may affect the reliability of hypothesis tests
+and confidence interval</p>
+<p>No Endogeneity: The independent variables are not correlated with the
+error term. If endogeneity exists (where a predictor is correlated with
+the error term), OLS estimates can be biased</p>
+<p>##Based on the graphs linearity holds, errors might not be normally
+distributed but they are homoscedastic.</p>
 <hr />
 <p>(more chapters to be added similarly as we proceed with the
 course!)</p>

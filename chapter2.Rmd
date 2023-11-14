@@ -80,6 +80,7 @@ plot(model1, which = 1,caption = "Residuals vs fitted values")
 #Normal qq
 
 qqnorm(model1$residuals)
+
 qqline(model1$residuals)
 
 #Residual vs leverage
