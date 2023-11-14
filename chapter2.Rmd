@@ -1,25 +1,24 @@
 # 2. Regression and model validation
-
-install.packages("tidyverse")
-
-# Install the sandwich package
-install.packages("sandwich")
-
-# Install the lmtest package
-install.packages("lmtest")
+```{r}
 
 library(tidyverse)
 library(sandwich)
 library(lmtest)
 
 
+```
+
+
+
 ## Read the data
 
-
+```{r}
 analysisdata2 <- read_csv("data/learning2014.csv")
 
 
 str(analysisdata2)
+```
+
 
 #Data included survey variables from students, measuring attitudes towards statistics with 1-5 scael
 #Data set includes background characteristics like age and gender
@@ -27,19 +26,31 @@ str(analysisdata2)
 
 # Next, let's draw some distirbutions
 
+```{r}
 data_long <- analysisdata2 %>% select(stra,surf,attitude) %>% 
   pivot_longer(everything(), names_to = "Variable")
+```
 
+
+
+```{r}
 ggplot(data_long, aes(x = Variable, y = value)) +
   geom_boxplot() +
   labs(title = "Figure 1: Distribution for three questions categories",
        x = "Question category",
        y = "Value") +
   theme_minimal()
+
+```
+
+
   
 ##This figure shows the distribution for three variables. Median in these variables is around three. Next, lets look at age 
-  
+```{r}
+
   hist(analysisdata2$Age, main = "Histogram of Age", xlab = "Age", ylab = "Frequency")
+```
+  
 ## mean age 25 and most observations between 20-25.
   
 #Next, regression
@@ -49,8 +60,11 @@ ggplot(data_long, aes(x = Variable, y = value)) +
 
 
 #Run model
+```{r}
 model <- lm(formula= Points ~ attitude + gender  + Age  + deep, data=analysisdata2)
 summary(model)
+```
+
 
 T-test is used to test the significance of individual regression coefficient, it is calculated as a beta coefficient divided by standard error. T-test tells if the variable has a relatioship with the outcome in statistically meaningful way, if the coefficient is different from zero.
 
@@ -58,8 +72,11 @@ F-test tests if all the coefficients variable have statistically meaningful rela
 
 In the model above, only attitude had a statistically meaningful relatioship with points. Hence, I remove the other variables and run it again.
 
+```{r}
 model1 <- lm(formula= Points ~ attitude, data=analysisdata2)
 summary(model1)
+```
+
 
 
 Based on outputs above one can conclude that only statistically significant coefficient in the specification is attitude (assuming homoskedastic errors!). On average one-unit increase in the scale of attitude increases points by roughly 3.5. 
@@ -75,16 +92,28 @@ After dropping gender, age and attitude I'm left it one explanatory variable (at
 ##Next plots
 
 # Residuals vs Fitted values
+
+
+```{r}
 plot(model1, which = 1,caption = "Residuals vs fitted values")
+```
 
 #Normal qq
 
+```{r}
 qqnorm(model1$residuals)
-
 qqline(model1$residuals)
+```
+
+
 
 #Residual vs leverage
+
+```{r}
 plot(model1, which = 5)
+```
+
+
 
 Assumptions:
 
