@@ -1,13 +1,101 @@
-# Insert chapter 2 title here
+# 2. Regression and model validation
 
-*Describe the work you have done this week and summarize your learning.*
+install.packages("tidyverse")
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+# Install the sandwich package
+install.packages("sandwich")
 
-```{r}
-date()
-```
+# Install the lmtest package
+install.packages("lmtest")
 
-Here we go again...
+library(tidyverse)
+library(sandwich)
+library(lmtest)
+
+
+## Read the data
+
+
+analysisdata2 <- read_csv("data/learning2014.csv")
+
+
+str(analysisdata2)
+
+#Data included survey variables from students, measuring attitudes towards statistics with 1-5 scael
+#Data set includes background characteristics like age and gender
+# There is also info about deep learning, strategic learning and surface learning
+
+# Next, let's draw some distirbutions
+
+data_long <- analysisdata2 %>% select(stra,surf,attitude) %>% 
+  pivot_longer(everything(), names_to = "Variable")
+
+ggplot(data_long, aes(x = Variable, y = value)) +
+  geom_boxplot() +
+  labs(title = "Figure 1: Distribution for three questions categories",
+       x = "Question category",
+       y = "Value") +
+  theme_minimal()
+  
+##This figure shows the distribution for three variables. Median in these variables is around three. Next, lets look at age 
+  
+  hist(analysisdata2$Age, main = "Histogram of Age", xlab = "Age", ylab = "Frequency")
+## mean age 25 and most observations between 20-25.
+  
+#Next, regression
+
+
+## Regression model
+
+
+#Run model
+model <- lm(formula= Points ~ attitude + gender  + Age  + deep, data=analysisdata2)
+summary(model)
+
+T-test is used to test the significance of individual regression coefficient, it is calculated as a beta coefficient divided by standard error. T-test tells if the variable has a relatioship with the outcome in statistically meaningful way, if the coefficient is different from zero.
+
+F-test tests if all the coefficients variable have statistically meaningful relationship (different from zero) together.
+
+In the model above, only attitude had a statistically meaningful relatioship with points. Hence, I remove the other variables and run it again.
+
+model1 <- lm(formula= Points ~ attitude, data=analysisdata2)
+summary(model1)
+
+
+Based on outputs above one can conclude that only statistically significant coefficient in the specification is attitude (assuming homoskedastic errors!). On average one-unit increase in the scale of attitude increases points by roughly 3.5. 
+
+-  t-value tests whether the coefficient is statistically significantly different from zero
+-  F-statistics tests whether all of the coefficient are different from zero (jointly)
+
+
+
+
+After dropping gender, age and attitude I'm left it one explanatory variable (attitude). Beta-coefficient is about 3.5 meaning that one unit increase in attitude increases points by 3,5, on average. Standard error is pretty small (0.56) so the t-stat is over 6 which means that the relationship is statistically significant. Multiple r-squared tells what percentage of the variation in outcome variable (points) is explained by the model. In this case it is 19 percent.
+
+##Next plots
+
+# Residuals vs Fitted values
+plot(model1, which = 1,caption = "Residuals vs fitted values")
+
+#Normal qq
+
+qqnorm(model1$residuals)
+qqline(model1$residuals)
+
+#Residual vs leverage
+plot(model1, which = 5)
+
+Assumptions:
+
+Linearity: The relationship between the independent variables and the dependent variable is linear. The model should capture a linear relationship between predictors and the outcome.
+
+Independence of Errors (Residuals): The errors (residuals) in the model are independent of each other. There should be no correlation between consecutive residuals or any patterns in their distribution.
+
+Homoscedasticity (Constant Variance of Errors): The variance of the errors should be constant across all levels of the independent variables. In other words, the spread of residuals should remain consistent across the range of predicted values.
+
+Normality of Errors (Residuals): The residuals should follow a normal distribution. While the normality assumption is not necessary for unbiasedness, violations may affect the reliability of hypothesis tests and confidence interval
+
+No Endogeneity: The independent variables are not correlated with the error term. If endogeneity exists (where a predictor is correlated with the error term), OLS estimates can be biased
+
+##Based on the graphs linearity holds, errors might not be normally distributed but they are homoscedastic.
+  
