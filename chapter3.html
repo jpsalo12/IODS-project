@@ -446,14 +446,12 @@ very high)</p>
 <p>29 health - current health status (numeric: from 1 - very bad to 5 -
 very good)</p>
 <p>30 absences - number of school absences (numeric: from 0 to 93)</p>
-</div>
-</div>
-<div id="these-grades-are-related-with-the-course-subject-math-or-portuguese" class="section level1">
-<h1>these grades are related with the course subject, Math or
-Portuguese:</h1>
+<p>#these grades are related with the course subject, Math or
+Portuguese:</p>
 <p>31 G1 - first period grade (numeric: from 0 to 20)</p>
 <p>31 G2 - second period grade (numeric: from 0 to 20)</p>
 <p>32 G3 - final grade (numeric: from 0 to 20, output target</p>
+</div>
 </div>
 <div id="to-study-the-relationship-between-highlow-alcohol-consumption-i-choose-the-following-variables.-mothers-education-activities-weekly-study-time-and-going-out-with-friends." class="section level1">
 <h1>To study the relationship between high/low alcohol consumption I
@@ -466,7 +464,9 @@ correlated with alcohol consumption i.e the higher the value of these
 variables are the lower alcohol consumption is.</p>
 <p>Going out with friends is probably positively correlated with alcohol
 consumption.</p>
-<p>#Let’s draw some graphs</p>
+</div>
+<div id="lets-draw-some-graphs-first-mothers-education" class="section level1">
+<h1>Let’s draw some graphs, first mother’s education</h1>
 <pre class="r"><code># 
 g2 &lt;- ggplot(data = alc, aes(x = Medu))
 
@@ -505,7 +505,8 @@ to be non-existent so there is no clear pattern. My hypothesis was
 wrong. The average of alcohol usage is highest in the category where
 mother does not have any education but there is only three obs so we
 should not make any conclusion based on that.</p>
-<p>##Next variable, acitivites</p>
+<div id="next-variable-acitivites" class="section level2">
+<h2>Next variable, acitivites</h2>
 <pre class="r"><code># 
 g3 &lt;- ggplot(data = alc, aes(x = activities))
 
@@ -540,7 +541,9 @@ g4 +  geom_boxplot()+
 and no. There are slightly more yes answers (51%). Surprisingly, extra
 activities are not related to drinking, based on the graph. My
 hypothesis was wrong (again), damn it.</p>
-<p>##Next one, weekly study time</p>
+</div>
+<div id="next-one-weekly-study-time" class="section level2">
+<h2>Next one, weekly study time</h2>
 <pre class="r"><code># 
 g5 &lt;- ggplot(data = alc, aes(x = studytime))
 
@@ -575,7 +578,9 @@ g6 +  geom_boxplot()+
 fraction studies more than ten hours in a week. Alcohol consumption
 decreases when study time increases, so I my hypothesis was on the right
 track. Vamos!</p>
-<p>##Next one, going out with friends</p>
+</div>
+<div id="next-one-going-out-with-friends" class="section level2">
+<h2>Next one, going out with friends</h2>
 <pre class="r"><code># 
 g7 &lt;- ggplot(data = alc, aes(x = goout))
 
@@ -609,6 +614,7 @@ g8 +  geom_boxplot()+
 <p>Going out variable looks almost like a normally distributed, where
 three is the most common and extremes are rare (1 and 5). As guessesd,
 alcohol consumption increases with going out.</p>
+</div>
 <div id="logistic-regression-1" class="section level2">
 <h2>Logistic regression</h2>
 <div id="estimating-the-model" class="section level3">
@@ -697,8 +703,58 @@ all &lt;- nrow(alc)
 
 inaccurate/all</code></pre>
 <pre><code>## [1] 0.2459459</code></pre>
+<p>The proportion of inaccurately classified indidiuals is 24,5%. My
+model predicts the correct outcome with desent accuracy.</p>
 </div>
 </div>
+<div id="simple-guessing-strategy" class="section level2">
+<h2>Simple guessing strategy</h2>
+<pre class="r"><code>#include only predictors with statistical significance
+model2 &lt;- glm(high_use ~  school + sex +age ,family=binomial,data=alc)
+
+# predict() the probability of high_use
+alc &lt;- mutate(alc, probability2 = predict(model2, type = &quot;response&quot;))
+
+# use the probabilities to make a prediction of high_use
+alc &lt;- mutate(alc, prediction2 = probability2 &gt; 0.5)
+
+# tabulate the target variable versus the predictions
+#tabyl(alc, high_use,prediction)
+
+table(high_use = alc$high_use, prediction = alc$prediction2)</code></pre>
+<pre><code>##         prediction
+## high_use FALSE TRUE
+##    FALSE   254    5
+##    TRUE    108    3</code></pre>
+<pre class="r"><code>inaccurate2 &lt;- nrow(alc %&gt;% filter(high_use!=prediction2))
+all2 &lt;- nrow(alc)
+
+inaccurate2/all2</code></pre>
+<pre><code>## [1] 0.3054054</code></pre>
+<p>With simple guessing strategy the share of inaccurate guesses is
+30%</p>
+</div>
+</div>
+<div id="bonus" class="section level1">
+<h1>Bonus</h1>
+<pre class="r"><code># define a loss function (average prediction error)
+loss_func &lt;- function(class, prob) {
+  n_wrong &lt;- abs(class - prob) &gt; 0.5
+  mean(n_wrong)
+}
+
+# compute the average number of wrong predictions in the (training) data
+
+
+# K-fold cross-validation
+library(boot)</code></pre>
+<pre><code>## Warning: package &#39;boot&#39; was built under R version 4.3.2</code></pre>
+<pre class="r"><code>cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = model2, K = nrow(alc))
+
+# average number of wrong predictions in the cross validation
+cv$delta[1]</code></pre>
+<pre><code>## [1] 0.3135135</code></pre>
+<p>The model in exercise set was better. My error here is bigger.</p>
 </div>
 
 

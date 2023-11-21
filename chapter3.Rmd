@@ -94,7 +94,7 @@ names(alc)
 
 
 
-# these grades are related with the course subject, Math or Portuguese:
+#these grades are related with the course subject, Math or Portuguese:
 
 31 G1 - first period grade (numeric: from 0 to 20)
 
@@ -111,7 +111,7 @@ Mother's education, activities and weekly study time are negatively correlated w
 
 Going out with friends is probably positively correlated with alcohol consumption.
 
-#Let's draw some graphs
+# Let's draw some graphs, first mother's education
 
 ```{r}
 # 
@@ -142,7 +142,7 @@ g1 +  geom_boxplot()+
 
 ##Based on Above graphs most of the student have mother who has at least secondary educations and less than 14% have maximum primary education. The relatioship of alcohol usage and mother's education seems to be non-existent so there is no clear pattern. My hypothesis was wrong. The average of alcohol usage is highest in the category where mother does not have any education but there is only three obs so we should not make any conclusion based on that.
 
-##Next variable, acitivites
+## Next variable, acitivites
 ```{r}
 # 
 g3 <- ggplot(data = alc, aes(x = activities))
@@ -169,7 +169,7 @@ g4 +  geom_boxplot()+
 ```
 ##It seems that activities is almost equally distributed between yes and no. There are slightly more yes answers (51%). Surprisingly, extra activities are not related to drinking, based on the graph. My hypothesis was wrong (again), damn it.
 
-##Next one, weekly study time
+## Next one, weekly study time
 
 ```{r}
 # 
@@ -196,7 +196,7 @@ g6 +  geom_boxplot()+
 ```
 Most common study time seems to be between 2-5 hours and only a small fraction studies more than ten hours in a week. Alcohol consumption decreases when study time increases, so I my hypothesis was on the right track. Vamos!
 
-##Next one, going out with friends
+## Next one, going out with friends
 
 ```{r}
 # 
@@ -275,3 +275,56 @@ all <- nrow(alc)
 
 inaccurate/all
 ```
+The proportion of inaccurately classified indidiuals is 24,5%. My model predicts the correct outcome with desent accuracy.
+
+## Simple guessing strategy
+```{r}
+#include only predictors with statistical significance
+model2 <- glm(high_use ~  school + sex +age ,family=binomial,data=alc)
+
+# predict() the probability of high_use
+alc <- mutate(alc, probability2 = predict(model2, type = "response"))
+
+# use the probabilities to make a prediction of high_use
+alc <- mutate(alc, prediction2 = probability2 > 0.5)
+
+# tabulate the target variable versus the predictions
+#tabyl(alc, high_use,prediction)
+
+table(high_use = alc$high_use, prediction = alc$prediction2)
+```
+
+
+```{r}
+inaccurate2 <- nrow(alc %>% filter(high_use!=prediction2))
+all2 <- nrow(alc)
+
+inaccurate2/all2
+```
+
+With simple guessing strategy the share of inaccurate guesses is 30%
+
+
+# Bonus
+
+```{r}
+
+# define a loss function (average prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# compute the average number of wrong predictions in the (training) data
+
+
+# K-fold cross-validation
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = model2, K = nrow(alc))
+
+# average number of wrong predictions in the cross validation
+cv$delta[1]
+
+```
+
+The model in exercise set was better. My error here is bigger.
