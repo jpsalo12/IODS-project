@@ -25,7 +25,7 @@ str(mat)
 
 str(por)
 
-# Variables to join on
+# Let's do the combining
 join_cols <- names(mat %>% select(!c("failures", "paid", "absences", "G1", "G2", "G3")))
 
 free_cols <- names(mat %>% select(c("failures", "paid", "absences", "G1", "G2", "G3")))
