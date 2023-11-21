@@ -121,7 +121,8 @@ g2 <- ggplot(data = alc, aes(x = Medu))
 g2 + geom_bar()
 
 ##cross tab
-#tabyl(alc$Medu)
+
+table(Medu = alc$Medu)
 ```
 
 
@@ -150,7 +151,7 @@ g3 <- ggplot(data = alc, aes(x = activities))
 g3 + geom_bar()
 
 #tabyl(alc$activities)
-
+table(activities = alc$activities)
 ```
 
 
@@ -178,6 +179,7 @@ g5 <- ggplot(data = alc, aes(x = studytime))
 g5 + geom_bar()
 
 #tabyl(alc$studytime)
+table(studytime = alc$studytime)
 ```
 
 
@@ -204,7 +206,7 @@ g7 <- ggplot(data = alc, aes(x = goout))
 g7 + geom_bar()
 
 #tabyl(alc$goout)
-
+table(goout = alc$goout)
 ```
 
 
@@ -261,6 +263,8 @@ alc <- mutate(alc, prediction = probability > 0.5)
 
 # tabulate the target variable versus the predictions
 #tabyl(alc, high_use,prediction)
+
+table(high_use = alc$high_use, prediction = alc$prediction)
 ```
 
 ### The total proportion of inaccurately classified individuals
