@@ -244,7 +244,9 @@ cbind(OR, CI)
 ```
 The summary of the logistic regression tells me that the Mother's education, activity and study time have a negative coefficient meaning that they have negative connection with alcoholic use. The coefficient of going out is positive. My hypothesis was correct in all variables.
 
+Looking at the odd ratios and confidence intervals, I can tell that from my chosen variables, only study time and going out are statistically significant (does not include 1). The OR ratio tells the odds that outcome happened in presence of exposure compared to odds that the outcome happened in absence of that same exposure. OR=1 means that the predictor does not have connection with the outcome, OR<1 means that odds of the outcome happening is lower compared to the reference level and if OR>1 then odds of the outcome happening is higher for the predictor compared to reference point.
 
+Only OR>1 is going out, with odd-ratio 2.12. This means that odds of using alchol is 2.12 times higher when going out increases by one. For the other predictors OR<1, meaning that the odds for alcohol consumption are smaller when predictor increases.
 
 ### Prediction vs. actual 
 ```{r}
