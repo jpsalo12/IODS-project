@@ -1,8 +1,4 @@
----
-title: "Exercise 4"
-output: html_document
-date: "2023-11-27"
----
+# 4. Clustering and classification 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
