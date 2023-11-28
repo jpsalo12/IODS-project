@@ -217,8 +217,12 @@ table(correct = correct_classes, predicted =lda.pred$class)
 Pretty good predicting high's and low's!!
 
 
-## Distance
+## Distance.
+first reload
 ```{r}
+data("Boston")
+boston_scaled <- scale(Boston) %>% as.data.frame()
+
 # euclidean distance matrix
 dist_eu <- dist(boston_scaled)
 
