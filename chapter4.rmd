@@ -251,3 +251,4 @@ pairs(Boston, col = km$cluster)
 ```
 
 
+I guess the optimal cluster is two
