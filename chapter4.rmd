@@ -123,6 +123,7 @@ Looking at the correlation plot, one can see that crime rate is positively corre
 
 ### Standardizing data
 
+#Next, scaling, creating the quartile variable for Boston, test and train data sets
 ```{r}
 # Scale the Boston data set and save to boston_scaled
 boston_scaled <- scale(Boston) %>% as.data.frame()
@@ -154,8 +155,7 @@ boston_scaled <- data.frame(boston_scaled, crime)
 
 
 ```{r}
-# Work with the exercise in this chunk, step-by-step. Fix the R code!
-# boston_scaled is available
+
 
 # number of rows in the Boston dataset 
 n <- nrow(boston_scaled)
@@ -171,7 +171,7 @@ test <- boston_scaled[-ind,]
 
 ```
 
-
+## Linear discrimant analysis, let's fit the model
 
 ```{r}
 # Work with the exercise in this chunk, step-by-step. Fix the R code!
@@ -201,7 +201,7 @@ plot(lda.fit, dimen = 2)
 lda.arrows(lda.fit, myscale = 1)
 
 ```
-
+## Next, let's see who the model perform
 ```{r}
 
 correct_classes <- test$crime
@@ -214,9 +214,10 @@ lda.pred <- predict(lda.fit, newdata = test)
 table(correct = correct_classes, predicted =lda.pred$class)
 
 ```
+Pretty good predicting high's and low's!!
 
 
-
+## Distance
 ```{r}
 # euclidean distance matrix
 dist_eu <- dist(boston_scaled)
@@ -226,7 +227,7 @@ summary (dist_eu)
 
 ```
 
-
+## K-means
 ```{r}
 
 set.seed(123)
