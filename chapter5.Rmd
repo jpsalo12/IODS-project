@@ -1,7 +1,6 @@
-```{r setup, include=FALSE} 
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
+
 # 5. Dimensionality reduction techniques 
+
 
 # Let's open the human data, see summary and draw distributions of the variables
 
