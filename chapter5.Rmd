@@ -2,10 +2,11 @@
 # 5. Dimensionality reduction techniques 
 
 
-# Let's open the human data, see summary and draw distributions of the variables
+## Let's open the human data, see summary and draw distributions of the variables
 
 ```{r, echo=FALSE, warning=FALSE}
 library(tidyr)
+library(reshape2)
 library(dplyr)
 library(readr)
 library(tibble)
@@ -71,7 +72,7 @@ print(pca_pr)
 ```
 
 
-# 3.Same with standardized data
+## 3.Same with standardized data
 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -101,19 +102,19 @@ print(pca_pr_std)
 ```
 After standardizing the data, results are very different. I think it is because without standardizing the variables the pca1 overweights variables which has high variance (GNI) and when I do the standardization, variances become similar and therefore all the variables contribute equally to the analysis..
 
-# 4.
+## 4.
 
 My interpretation of the graph and PCA'S are that life expectancy, expected years of schooling , GNI per capita and proportion of males with at least seconday education affects negatively to PCA1, i.e countires with high life expectancy (like Finland) scores low on PCA1, because life expectancy affects negatively to the score. On the other variables like percentage of female representatives and proportion of females with at least secondary education affect positively to PCA2 and therefore countires which are high on those variables (like Finland), score high on PCA2.  The length and direction of arrows indicate the contribution and relationship of the original variables to the principal components.
 
 
-# Tea exercise
+## Tea exercise
 ```{r}
 
-tea <- utils::read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+```
 
 
-
-
+```{r}
 # look at the summaries and structure of the data
 view(tea)
 summary(tea)
@@ -127,12 +128,10 @@ str(tea)
 ```{r}
 # select the 'keep_columns' to create a new dataset
 
-#keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
 
 library(dplyr)
 
-tea_time <- tea %>%
-  select(Tea, How, how, sugar, where, lunch)
+tea_time <- dplyr::select(tea, Tea, How, how, sugar, where, lunch)
 
 ggplot(tea_time, aes(x = Tea )) +
       geom_bar(fill = "skyblue", bins = 30) +
@@ -141,27 +140,27 @@ ggplot(tea_time, aes(x = Tea )) +
 ```
 
 ```{r}
-ggplot(tea, aes(x = How )) +
+ggplot(tea_time, aes(x = How )) +
       geom_bar(fill = "skyblue", bins = 30) +
       labs(title = "Distribution of How") +
       theme_minimal()
 ```
 
 ```{r}
-ggplot(tea, aes(x = how )) +
+ggplot(tea_time, aes(x = how )) +
       geom_bar(fill = "skyblue", bins = 30) +
       labs(title = "Distribution of how") +
       theme_minimal()
 ```
 
 ```{r}
-ggplot(tea, aes(x = sugar )) +
+ggplot(tea_time, aes(x = sugar )) +
       geom_bar(fill = "skyblue", bins = 30) +
       labs(title = "Distribution of sugar") +
       theme_minimal()
 ```
 ```{r}
-ggplot(tea, aes(x = where)) +
+ggplot(tea_time, aes(x = where)) +
       geom_bar(fill = "pink", bins = 30) +
       labs(title = "Distribution of where") +
       theme_minimal()
@@ -170,13 +169,13 @@ ggplot(tea, aes(x = where)) +
 
 
 ```{r}
-ggplot(tea, aes(x = lunch)) +
+ggplot(tea_time, aes(x = lunch)) +
       geom_bar(fill = "pink", bins = 30) +
       labs(title = "Distribution of lunch") +
       theme_minimal()
 ```
 
-# Multiple correspondence analysis
+## Multiple correspondence analysis
 
 ```{r, echo=FALSE, warning=FALSE}
 # Work with the exercise in this chunk, step-by-step. Fix the R code!
