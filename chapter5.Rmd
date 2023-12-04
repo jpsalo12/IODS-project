@@ -1,10 +1,12 @@
----
-title: 'Exercise 5: Dimensionality reduction techniques'
-author: "Jussipekka Salo"
-date: "2023-12-04"
-output: html_document
----
-# Let's see summary and draw distributions of the variables
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+# 5. Dimensionality reduction techniques 
+
+# Let's open the human data, see summary and draw distributions of the variables
+
+
+
 ```{r, echo=FALSE, warning=FALSE}
 
 library(tidyr)
@@ -42,7 +44,7 @@ Strongest negative correlation is between Maternal mortality ratio and Life expe
 
 
 
-## 2. 
+## 2. Let's perform the PCA with raw data
 ```{r, echo=FALSE, warning=FALSE}
 
 
@@ -111,16 +113,15 @@ tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open
 # select the 'keep_columns' to create a new dataset
 # column names to keep in the dataset
 
+library(GGally)
+
+library(dplyr)
+library(tidyr)
 
 # look at the summaries and structure of the data
 view(tea)
 summary(tea)
 str(tea)
-
-library(GGally)
-
-library(dplyr)
-library(tidyr)
 
 
 # select the 'keep_columns' to create a new dataset
@@ -131,14 +132,57 @@ tea_time <- select(tea, keep_columns)
 # visualize the dataset
 library(ggplot2)
 
-pivot_longer(tea_time, cols = everything()) %>% 
-  ggplot(aes(value)) + facet_wrap("name", scales = "free")
-geom_histogram(binwidth = 1, fill = "pink", color = "black")
-theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
 
 
 
 ```
+
+
+
+```{r}
+ggplot(tea_time, aes(x = Tea )) +
+      geom_bar(fill = "skyblue", bins = 30) +
+      labs(title = "Distribution of Tea") +
+      theme_minimal()
+```
+
+```{r}
+ggplot(tea, aes(x = How )) +
+      geom_bar(fill = "skyblue", bins = 30) +
+      labs(title = "Distribution of How") +
+      theme_minimal()
+```
+
+```{r}
+ggplot(tea, aes(x = how )) +
+      geom_bar(fill = "skyblue", bins = 30) +
+      labs(title = "Distribution of how") +
+      theme_minimal()
+```
+
+```{r}
+ggplot(tea, aes(x = sugar )) +
+      geom_bar(fill = "skyblue", bins = 30) +
+      labs(title = "Distribution of sugar") +
+      theme_minimal()
+```
+```{r}
+ggplot(tea, aes(x = where)) +
+      geom_bar(fill = "pink", bins = 30) +
+      labs(title = "Distribution of where") +
+      theme_minimal()
+
+```
+
+
+```{r}
+ggplot(tea, aes(x = lunch)) +
+      geom_bar(fill = "pink", bins = 30) +
+      labs(title = "Distribution of lunch") +
+      theme_minimal()
+```
+
+# Multiple correspondence analysis
 
 ```{r, echo=FALSE, warning=FALSE}
 # Work with the exercise in this chunk, step-by-step. Fix the R code!
