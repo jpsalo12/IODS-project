@@ -4,23 +4,26 @@
 
 # Let's open the human data, see summary and draw distributions of the variables
 
-
-
 ```{r, echo=FALSE, warning=FALSE}
-
 library(tidyr)
 library(dplyr)
 library(readr)
+library(tibble)
+library(GGally)
+library(ggplot2)
+library(corrplot)
+library(FactoMineR)
+
+```
+
+```{r, echo=FALSE, warning=FALSE}
+
 
 # move the country names to rownames
-library(tibble)
+
 human_new <- readr::read_csv("data/human_new.csv")
 
 human_ <- column_to_rownames(human_new, "Country")
-# Access GGally
-library(GGally)
-
-library(corrplot)
 
 
 # create a more advanced plot matrix with ggpairs()
@@ -104,18 +107,12 @@ My interpretation of the graph and PCA'S are that life expectancy, expected year
 
 
 # Tea exercise
+```{r}
 
-```{r, echo=FALSE, warning=FALSE}
-tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+tea <- utils::read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
 
 
-# select the 'keep_columns' to create a new dataset
-# column names to keep in the dataset
 
-library(GGally)
-
-library(dplyr)
-library(tidyr)
 
 # look at the summaries and structure of the data
 view(tea)
@@ -123,22 +120,20 @@ summary(tea)
 str(tea)
 
 
-# select the 'keep_columns' to create a new dataset
-keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
-tea_time <- select(tea, keep_columns)
-
-
-# visualize the dataset
-library(ggplot2)
-
-
-
-
 ```
 
 
 
 ```{r}
+# select the 'keep_columns' to create a new dataset
+
+#keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+library(dplyr)
+
+tea_time <- tea %>%
+  select(Tea, How, how, sugar, where, lunch)
+
 ggplot(tea_time, aes(x = Tea )) +
       geom_bar(fill = "skyblue", bins = 30) +
       labs(title = "Distribution of Tea") +
@@ -188,7 +183,7 @@ ggplot(tea, aes(x = lunch)) +
 
 
 # multiple correspondence analysis
-library(FactoMineR)
+
 mca <- MCA(tea_time, graph = FALSE)
 
 # summary of the model
