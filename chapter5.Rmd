@@ -1,0 +1,167 @@
+---
+title: 'Exercise 5: Dimensionality reduction techniques'
+author: "Jussipekka Salo"
+date: "2023-12-04"
+output: html_document
+---
+# Let's see summary and draw distributions of the variables
+```{r, echo=FALSE, warning=FALSE}
+
+library(tidyr)
+library(dplyr)
+library(readr)
+
+# move the country names to rownames
+library(tibble)
+human_new <- readr::read_csv("data/human_new.csv")
+
+human_ <- column_to_rownames(human_new, "Country")
+# Access GGally
+library(GGally)
+
+library(corrplot)
+
+
+# create a more advanced plot matrix with ggpairs()
+p <- ggpairs(human_, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
+print(p)
+
+# compute the correlation matrix and visualize it with corrplot
+corhuman <- cor(human_)
+
+# visualize the correlation matrix
+corrplot(corhuman, method="circle")
+```
+
+### Looks like gni, Maternal mortality ratio and Adolescent birth rate are skewed to the left.
+Proportion of females in the labour force and Life expectancy at birth are skewed to the right
+
+Strongest positive correlation is between Expected years of schooling and Life expectancy at birth
+
+Strongest negative correlation is between Maternal mortality ratio and Life expectancy at birth
+
+
+
+## 2. 
+```{r, echo=FALSE, warning=FALSE}
+
+
+# perform principal component analysis (with the SVD method)
+pca_human <- prcomp(human_)
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2)
+
+# create and print out a summary of pca_human
+s <- summary(pca_human)
+
+
+# rounded percentanges of variance captured by each PC
+pca_pr <- round(1*s$importance[2, ], digits = 5)
+
+# print out the percentages of variance
+
+print(pca_pr)
+
+
+```
+
+
+# 3.Same with standardized data
+
+
+```{r, echo=FALSE, warning=FALSE}
+
+
+# perform principal component analysis (with the SVD method)
+
+human_std <- scale(human_)
+
+pca_human_std <- prcomp(human_std)
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human_std, choices = 1:2)
+
+# create and print out a summary of pca_human
+s_std <- summary(pca_human_std)
+
+
+# rounded percentanges of variance captured by each PC
+pca_pr_std <- round(1*s_std$importance[2, ], digits = 5)
+
+# print out the percentages of variance
+
+print(pca_pr_std)
+
+
+```
+After standardizing the data, results are very different. I think it is because without standardizing the variables the pca1 overweights variables which has high variance (GNI) and when I do the standardization, variances become similar and therefore all the variables contribute equally to the analysis..
+
+# 4.
+
+My interpretation of the graph and PCA'S are that life expectancy, expected years of schooling , GNI per capita and proportion of males with at least seconday education affects negatively to PCA1, i.e countires with high life expectancy (like Finland) scores low on PCA1, because life expectancy affects negatively to the score. On the other variables like percentage of female representatives and proportion of females with at least secondary education affect positively to PCA2 and therefore countires which are high on those variables (like Finland), score high on PCA2.  The length and direction of arrows indicate the contribution and relationship of the original variables to the principal components.
+
+
+# Tea exercise
+
+```{r, echo=FALSE, warning=FALSE}
+tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+
+
+# select the 'keep_columns' to create a new dataset
+# column names to keep in the dataset
+
+
+# look at the summaries and structure of the data
+view(tea)
+summary(tea)
+str(tea)
+
+library(GGally)
+
+library(dplyr)
+library(tidyr)
+
+
+# select the 'keep_columns' to create a new dataset
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- select(tea, keep_columns)
+
+
+# visualize the dataset
+library(ggplot2)
+
+pivot_longer(tea_time, cols = everything()) %>% 
+  ggplot(aes(value)) + facet_wrap("name", scales = "free")
+geom_histogram(binwidth = 1, fill = "pink", color = "black")
+theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+
+
+```
+
+```{r, echo=FALSE, warning=FALSE}
+# Work with the exercise in this chunk, step-by-step. Fix the R code!
+
+
+# multiple correspondence analysis
+library(FactoMineR)
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+summary (mca)
+
+# visualize MCA
+plot(mca, invisible=c("ind"), graph.type = "classic")
+
+```
+
+
+## Interpretation for task 5
+I chose to do the MCA by using only variables "Tea", "How", "how", "sugar", "where", "lunch". Looking at the contributions of the variables on Dim1 and Dim 2:
+Dim1 is heavily affected by the variables "how" and "where" and expecially category unpakaged
+Dim2 is heavily affected also by the variables "where" and "how" and especially category "other".
+
+When plotting the graph, one can see that for example categories "unpackaged" and "tea shop" have strong assocation since they are close each other. and for example "green" and "other" does not have a strong connection since they are far away from each other. Note that it was enough to draw at least the variable biplot of the analysis.
+
+
